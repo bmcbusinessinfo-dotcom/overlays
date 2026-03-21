@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ending - Los Brothers Life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --negro:     #060810;
+    --azul:      #0a2fff;
+    --azul-glow: #1a6fff;
+    --cyan:      #00e5ff;
+    --verde:     #00ff88;
+    --rojo:      #ff2244;
+    --blanco:    #e8f4ff;
+    --gris:      #4a5568;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background: var(--negro);
+    color: var(--blanco);
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  /* ══════════════════════════════════════
+     ENTRADA — el ending arranca desde negro
+     y se revela con un fade épico
+  ══════════════════════════════════════ */
+  .intro-cover {
+    position: fixed; inset: 0; z-index: 999;
+    background: var(--negro);
+    animation: coverFade 1.8s ease-out forwards;
+  }
+  @keyframes coverFade {
+    0%   { opacity: 1; }
+    60%  { opacity: 1; }
+    100% { opacity: 0; pointer-events: none; }
+  }
+
+  /* ══════════════════════════════════════
+     FONDO
+  ══════════════════════════════════════ */
+  .bg-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridFadeIn 3s ease-out forwards, gridScroll 25s linear 3s infinite;
+    opacity: 0;
+  }
+  @keyframes gridFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes gridScroll {
+    from { background-position: 0 0; }
+    to   { background-position: 60px 60px; }
+  }
+
+  /* Radial con más drama — centrado y profundo */
+  .bg-radial {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 900px 700px at 50% 50%, rgba(10,47,255,0.22) 0%, transparent 65%),
+      radial-gradient(ellipse 350px 350px at 8%  80%, rgba(0,255,136,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 350px 350px at 92% 20%, rgba(255,34,68,0.10)  0%, transparent 60%);
+    animation: radialPulse 6s ease-in-out infinite;
+  }
+  @keyframes radialPulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.7; }
+  }
+
+  .scanline {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.1; animation: scanMove 10s ease-in-out infinite;
+  }
+  @keyframes scanMove {
+    0%   { top: -2px; opacity: 0; }
+    10%  { opacity: 0.15; }
+    90%  { opacity: 0.15; }
+    100% { top: 1082px; opacity: 0; }
+  }
+
+  /* ══════════════════════════════════════
+     ESQUINAS
+  ══════════════════════════════════════ */
+  .corner { position: absolute; width: 60px; height: 60px; }
+  .corner::before, .corner::after { content: ''; position: absolute; }
+  .corner::before { width: 100%; height: 2px; top: 0; left: 0; }
+  .corner::after  { width: 2px; height: 100%; top: 0; left: 0; }
+  .corner.tl { top: 30px; left: 30px; }
+  .corner.tl::before, .corner.tl::after { background: var(--verde); box-shadow: 0 0 8px var(--verde); }
+  .corner.br { bottom: 30px; right: 30px; transform: scale(-1); }
+  .corner.br::before, .corner.br::after { background: var(--verde); box-shadow: 0 0 8px var(--verde); }
+  .corner.tr { top: 30px; right: 30px; transform: scaleX(-1); }
+  .corner.tr::before, .corner.tr::after { background: var(--rojo); box-shadow: 0 0 8px var(--rojo); }
+  .corner.bl { bottom: 30px; left: 30px; transform: scaleY(-1); }
+  .corner.bl::before, .corner.bl::after { background: var(--rojo); box-shadow: 0 0 8px var(--rojo); }
+
+  /* ══════════════════════════════════════
+     MARCA SUPERIOR
+  ══════════════════════════════════════ */
+  .brand-area {
+    position: absolute; top: 52px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 16px;
+    animation: fadeDown 1s ease-out 1.8s both;
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+  .brand-icon {
+    width: 44px; height: 44px; border: 2px solid var(--cyan); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--cyan);
+    background: rgba(0,229,255,0.06); box-shadow: 0 0 20px rgba(0,229,255,0.2);
+  }
+  .brand-name {
+    font-family: 'Bebas Neue', sans-serif; font-size: 28px;
+    letter-spacing: 4px; color: var(--blanco);
+  }
+  .brand-tag { font-size: 11px; letter-spacing: 3px; color: var(--cyan); opacity: 0.7; text-transform: uppercase; }
+
+  /* ══════════════════════════════════════
+     STATUS
+  ══════════════════════════════════════ */
+  .status-bar {
+    position: absolute; top: 50px;
+    display: flex; align-items: center; gap: 10px;
+    animation: fadeDown 1s ease-out 2s both;
+  }
+  .status-bar.right { right: 70px; }
+  .status-bar.left  { left: 70px; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .status-dot.g { background: var(--verde); box-shadow: 0 0 10px var(--verde); animation: blink 2s ease-in-out infinite; }
+  .status-dot.r { background: var(--rojo);  box-shadow: 0 0 10px var(--rojo);  animation: blink 1.5s ease-in-out infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+  .status-text { font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }
+  .status-text.g { color: var(--verde); }
+  .status-text.r { color: var(--rojo); }
+
+  /* ══════════════════════════════════════
+     CENTRO — el corazón del ending
+  ══════════════════════════════════════ */
+  .center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  .label-top {
+    font-family: 'Share Tech Mono', monospace; font-size: 13px;
+    letter-spacing: 7px; color: var(--cyan); opacity: 0.6;
+    text-transform: uppercase; margin-bottom: 20px;
+    animation: fadeUp 1s ease-out 2s both;
+  }
+
+  /* Gracias — texto pequeño encima del título */
+  .gracias {
+    font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700;
+    letter-spacing: 10px; color: var(--verde);
+    text-shadow: 0 0 20px rgba(0,255,136,0.5);
+    text-transform: uppercase; margin-bottom: 8px;
+    animation: fadeUp 1s ease-out 2.2s both;
+  }
+
+  .title-main {
+    font-family: 'Bebas Neue', sans-serif; font-size: 150px; line-height: 0.88;
+    letter-spacing: 4px; color: transparent;
+    background: linear-gradient(135deg, #ffffff 0%, var(--cyan) 30%, var(--azul-glow) 55%, var(--rojo) 80%, #ffffff 100%);
+    -webkit-background-clip: text; background-clip: text; background-size: 300% 300%;
+    filter: drop-shadow(0 0 50px rgba(0,229,255,0.4));
+    animation: fadeUp 1.2s ease-out 2.3s both, titleShimmer 7s ease-in-out 3.5s infinite;
+  }
+  @keyframes titleShimmer {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .title-sub {
+    font-family: 'Bebas Neue', sans-serif; font-size: 38px; letter-spacing: 16px;
+    color: var(--blanco); opacity: 0.35; margin-top: 2px;
+    animation: fadeUp 1s ease-out 2.6s both;
+  }
+
+  /* Divisor */
+  .divider {
+    width: 500px; height: 1px; margin: 26px 0 22px;
+    background: linear-gradient(90deg, transparent, var(--rojo) 20%, var(--cyan) 50%, var(--verde) 80%, transparent);
+    position: relative; animation: fadeUp 1s ease-out 2.7s both;
+  }
+  .divider::before {
+    content: ''; position: absolute; top: -3px; left: 50%; transform: translateX(-50%);
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--cyan); box-shadow: 0 0 12px var(--cyan);
+  }
+
+  /* Mensaje emotivo */
+  .message {
+    font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 600;
+    letter-spacing: 3px; color: var(--blanco); opacity: 0.5;
+    text-transform: uppercase; text-align: center;
+    animation: fadeUp 1s ease-out 2.9s both;
+  }
+
+  /* ══════════════════════════════════════
+     PANEL DE REDES SOCIALES
+  ══════════════════════════════════════ */
+  .socials {
+    position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 20px; align-items: center;
+    animation: fadeUp 1s ease-out 3.2s both;
+  }
+
+  .social-card {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; border-radius: 6px;
+    border: 1px solid;
+    transition: transform 0.2s;
+  }
+  .social-card.kick  { border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.06); }
+  .social-card.tiktok { border-color: rgba(0,229,255,0.3); background: rgba(0,229,255,0.06); }
+  .social-card.insta  { border-color: rgba(255,34,68,0.3);  background: rgba(255,34,68,0.06); }
+  .social-card.yt     { border-color: rgba(255,34,68,0.4);  background: rgba(255,34,68,0.08); }
+
+  .social-icon {
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px;
+  }
+  .social-card.kick  .social-icon { color: var(--verde); }
+  .social-card.tiktok .social-icon { color: var(--cyan); }
+  .social-card.insta  .social-icon { color: var(--rojo); }
+  .social-card.yt     .social-icon { color: var(--rojo); }
+
+  .social-info { display: flex; flex-direction: column; }
+  .social-platform {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    letter-spacing: 2px; opacity: 0.5; text-transform: uppercase;
+  }
+  .social-handle {
+    font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700;
+    letter-spacing: 1px; color: var(--blanco);
+  }
+
+  /* ══════════════════════════════════════
+     CHAT FINAL — mensajes de despedida
+  ══════════════════════════════════════ */
+  .chat-panel {
+    position: absolute; right: 28px; top: 90px; bottom: 86px; width: 300px;
+    background: rgba(6,8,16,0.7); border: 1px solid rgba(0,229,255,0.08);
+    border-radius: 6px; display: flex; flex-direction: column; overflow: hidden;
+    animation: fadeSlideR 1s ease-out 2.5s both;
+  }
+  @keyframes fadeSlideR {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .chat-header {
+    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chat-header-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--rojo); box-shadow: 0 0 6px var(--rojo);
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  .chat-header-text {
+    font-family: 'Share Tech Mono', monospace; font-size: 11px;
+    letter-spacing: 2px; color: var(--cyan); opacity: 0.7; text-transform: uppercase;
+  }
+  .chat-messages {
+    flex: 1; padding: 10px 12px;
+    display: flex; flex-direction: column; gap: 8px; justify-content: flex-end; overflow: hidden;
+  }
+  .chat-msg { font-size: 14px; font-weight: 600; line-height: 1.35; }
+  .chat-msg .name { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 1px; margin-bottom: 1px; }
+  .chat-msg .text { color: rgba(232,244,255,0.85); }
+  .chat-msg.verde    .name { color: var(--verde); }
+  .chat-msg.rojo     .name { color: var(--rojo); }
+  .chat-msg.cyan     .name { color: var(--cyan); }
+
+  /* ══════════════════════════════════════
+     PANEL IZQUIERDO — stats del stream
+  ══════════════════════════════════════ */
+  .stats-panel {
+    position: absolute; left: 28px; top: 90px; bottom: 86px; width: 300px;
+    display: flex; flex-direction: column; gap: 12px;
+    animation: fadeSlideL 1s ease-out 2.5s both;
+  }
+  @keyframes fadeSlideL {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .stat-card {
+    background: rgba(6,8,16,0.7); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 6px; padding: 16px 18px;
+  }
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    letter-spacing: 3px; color: var(--cyan); opacity: 0.5;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif; font-size: 48px; line-height: 1;
+    letter-spacing: 3px;
+  }
+  .stat-value.g { color: var(--verde); text-shadow: 0 0 15px rgba(0,255,136,0.4); }
+  .stat-value.r { color: var(--rojo);  text-shadow: 0 0 15px rgba(255,34,68,0.4); }
+  .stat-value.c { color: var(--cyan);  text-shadow: 0 0 15px rgba(0,229,255,0.4); }
+  .stat-sub {
+    font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 600;
+    letter-spacing: 2px; color: var(--blanco); opacity: 0.4;
+    text-transform: uppercase; margin-top: 2px;
+  }
+
+  .next-card {
+    background: rgba(6,8,16,0.7); border: 1px solid rgba(0,255,136,0.12);
+    border-radius: 6px; padding: 16px 18px; flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .next-label {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    letter-spacing: 3px; color: var(--verde); opacity: 0.6;
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .next-value {
+    font-family: 'Bebas Neue', sans-serif; font-size: 28px;
+    letter-spacing: 3px; color: var(--blanco);
+  }
+  .next-sub {
+    font-family: 'Rajdhani', sans-serif; font-size: 13px;
+    letter-spacing: 1px; color: var(--blanco); opacity: 0.35;
+    margin-top: 4px;
+  }
+
+  /* ══════════════════════════════════════
+     BARRA INFERIOR
+  ══════════════════════════════════════ */
+  .bottom-line {
+    position: absolute; bottom: 64px; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--verde) 20%, var(--cyan) 50%, var(--rojo) 80%, transparent);
+    opacity: 0.4;
+  }
+  .bottom-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 64px;
+    background: linear-gradient(0deg, rgba(6,8,16,0.98) 0%, transparent 100%);
+    display: flex; align-items: center; padding: 0 40px; gap: 16px;
+    animation: fadeUp 1s ease-out 3.4s both;
+  }
+  .ticker-label {
+    font-family: 'Share Tech Mono', monospace; font-size: 11px;
+    letter-spacing: 3px; color: var(--rojo); opacity: 0.7; white-space: nowrap;
+  }
+  .ticker-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.1); }
+  .ticker-text {
+    font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 600;
+    color: var(--blanco); flex: 1; white-space: nowrap; overflow: hidden;
+  }
+  .ticker-channel {
+    font-family: 'Share Tech Mono', monospace; font-size: 12px;
+    letter-spacing: 2px; color: var(--verde); opacity: 0.8; white-space: nowrap;
+  }
+
+  /* ══════════════════════════════════════
+     PARTÍCULAS — más densas, emotivas
+  ══════════════════════════════════════ */
+  .particles { position: absolute; inset: 0; pointer-events: none; }
+  .particle  { position: absolute; border-radius: 50%; animation: floatUp linear infinite; opacity: 0; }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.1; }
+    100% { transform: translateY(-400px) translateX(var(--drift)); opacity: 0; }
+  }
+
+  /* ══════════════════════════════════════
+     UTILITY
+  ══════════════════════════════════════ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Audio -->
+<audio id="bg-music" loop>
+  <source src="https://github.com/bmcbusinessinfo-dotcom/overlays/raw/refs/heads/main/DEAF%20KEV%20-%20Invincible%20%20Glitch%20Hop%20%20NCS%20-%20Copyright%20Free%20Music.mp3" type="audio/mpeg">
+</audio>
+<button id="music-btn" onclick="toggleMusic()" title="Música" style="position:fixed;bottom:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,229,255,0.15);border:1px solid rgba(0,229,255,0.3);color:var(--cyan);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.01;transition:opacity 0.3s;z-index:9999;">▶</button>
+
+<!-- Entrada épica desde negro -->
+<div class="intro-cover"></div>
+
+<!-- Fondo -->
+<div class="bg-grid"></div>
+<div class="bg-radial"></div>
+<div class="scanline"></div>
+
+<!-- Esquinas -->
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
+<!-- Status -->
+<div class="status-bar left">
+  <div class="status-dot r"></div>
+  <div class="status-text r">Stream terminando</div>
+</div>
+<div class="status-bar right">
+  <div class="status-dot g"></div>
+  <div class="status-text g" id="duration-label">Duración: 00:00</div>
+</div>
+
+<!-- Marca -->
+<div class="brand-area">
+  <div class="brand-icon">LB</div>
+  <div>
+    <div class="brand-name">Los Brothers<span style="color:var(--verde)">Life</span></div>
+    <div class="brand-tag">▸ Streaming IRL</div>
+  </div>
+</div>
+
+<!-- Partículas -->
+<div class="particles" id="particles"></div>
+
+<!-- Panel izquierdo — stats -->
+<div class="stats-panel">
+  <div class="stat-card">
+    <div class="stat-label">▸ Tiempo en vivo</div>
+    <div class="stat-value c" id="stream-time">00:00</div>
+    <div class="stat-sub">horas de contenido</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">▸ Mensajes en chat</div>
+    <div class="stat-value g" id="msg-count">0</div>
+    <div class="stat-sub">interacciones</div>
+  </div>
+  <div class="next-card">
+    <div class="next-label">▸ Próximo stream</div>
+    <div class="next-value" id="next-stream">MUY PRONTO</div>
+    <div class="next-sub">Activa las notificaciones 🔔</div>
+  </div>
+</div>
+
+<!-- Centro -->
+<div class="center">
+  <div class="label-top">// fin del stream //</div>
+  <div class="gracias">Gracias por estar aquí</div>
+  <div class="title-main">NOS VEMOS<br>PRONTO</div>
+  <div class="title-sub">LOS BROTHERS LIFE</div>
+  <div class="divider"></div>
+  <div class="message">Fueron parte de algo chido hoy 🤙</div>
+</div>
+
+<!-- Redes sociales -->
+<div class="socials">
+  <div class="social-card kick">
+    <div class="social-icon">KICK</div>
+    <div class="social-info">
+      <span class="social-platform">En vivo</span>
+      <span class="social-handle">/LosBrothersLife</span>
+    </div>
+  </div>
+  <div class="social-card tiktok">
+    <div class="social-icon">TT</div>
+    <div class="social-info">
+      <span class="social-platform">TikTok</span>
+      <span class="social-handle">@LosBrothersLife</span>
+    </div>
+  </div>
+  <div class="social-card insta">
+    <div class="social-icon">IG</div>
+    <div class="social-info">
+      <span class="social-platform">Instagram</span>
+      <span class="social-handle">@LosBrothersLife</span>
+    </div>
+  </div>
+  <div class="social-card yt">
+    <div class="social-icon">YT</div>
+    <div class="social-info">
+      <span class="social-platform">YouTube</span>
+      <span class="social-handle">Los Brothers Life</span>
+    </div>
+  </div>
+</div>
+
+<!-- Chat final — vacío, widget real de Streamlabs va encima -->
+<div class="chat-panel">
+  <div class="chat-header">
+    <div class="chat-header-dot"></div>
+    <div class="chat-header-text">Despedidas</div>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+</div>
+
+<!-- Barra inferior -->
+<div class="bottom-line"></div>
+<div class="bottom-bar">
+  <div class="ticker-label">▸ FIN</div>
+  <div class="ticker-divider"></div>
+  <div class="ticker-text">¡Gracias por ver Los Brothers Life! — Síguenos para no perderte el próximo stream 🔔</div>
+  <div class="ticker-divider"></div>
+  <div class="ticker-channel">@LosBrothersLife</div>
+</div>
+
+<script>
+/* ── CONTADOR DE DURACIÓN DEL STREAM ── */
+let streamSeconds = 0;
+const streamTimeEl  = document.getElementById('stream-time');
+const durationLabel = document.getElementById('duration-label');
+
+function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+setInterval(() => {
+  streamSeconds++;
+  const h = Math.floor(streamSeconds / 3600);
+  const m = Math.floor((streamSeconds % 3600) / 60);
+  const s = streamSeconds % 60;
+  const display = h > 0
+    ? `${pad(h)}:${pad(m)}:${pad(s)}`
+    : `${pad(m)}:${pad(s)}`;
+  streamTimeEl.textContent  = display;
+  durationLabel.textContent = `Duración: ${display}`;
+}, 1000);
+
+/* ── CONTADOR DE MENSAJES (simulado) ── */
+let msgCount = Math.floor(Math.random() * 200) + 80;
+const msgEl = document.getElementById('msg-count');
+msgEl.textContent = msgCount;
+
+/* ── PARTÍCULAS ── */
+const container = document.getElementById('particles');
+const colors = ['#00ff88','#00ff88','#ff2244','#ff2244','#00e5ff','#00e5ff','#1a6fff'];
+
+for (let i = 0; i < 50; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size  = Math.random() * 5 + 2;
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  p.style.cssText = `
+    width:${size}px;height:${size}px;
+    background:${color};
+    left:${Math.random() * 100}%;
+    bottom:${Math.random() * 20}%;
+    animation-duration:${Math.random() * 10 + 8}s;
+    animation-delay:${Math.random() * 10}s;
+    --drift:${(Math.random() - 0.5) * 150}px;
+    box-shadow:0 0 ${size * 2}px ${color};
+  `;
+  container.appendChild(p);
+}
+/* ── MÚSICA ── */
+const audio  = document.getElementById('bg-music');
+const btn    = document.getElementById('music-btn');
+let playing  = false;
+function toggleMusic() {
+  if (playing) { audio.pause(); btn.textContent = '▶'; playing = false; }
+  else { audio.play().catch(() => {}); btn.textContent = '⏸'; playing = true; }
+}
+</script>
+</body>
+</html>
