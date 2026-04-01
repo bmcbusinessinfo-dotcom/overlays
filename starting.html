@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Starting Soon - Primos Life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro:     #060810;
+    --azul:      #0a2fff;
+    --azul-glow: #1a6fff;
+    --cyan:      #00e5ff;
+    --verde:     #00ff88;
+    --rojo:      #ff2244;
+    --blanco:    #e8f4ff;
+    --gris:      #4a5568;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1920px; height: 1080px; overflow: hidden; background: var(--negro); color: var(--blanco); font-family: 'Rajdhani', sans-serif; }
+
+  .bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px); background-size: 60px 60px; animation: gridScroll 20s linear infinite; }
+  @keyframes gridScroll { from { background-position: 0 0; } to { background-position: 60px 60px; } }
+  .bg-radial { position: absolute; inset: 0; background: radial-gradient(ellipse 700px 500px at 50% 50%, rgba(10,47,255,0.18) 0%, transparent 70%), radial-gradient(ellipse 320px 280px at 12% 75%, rgba(0,255,136,0.10) 0%, transparent 65%), radial-gradient(ellipse 320px 280px at 88% 25%, rgba(255,34,68,0.10) 0%, transparent 65%); }
+  .scanline { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--cyan), transparent); opacity: 0.15; animation: scanMove 8s ease-in-out infinite; }
+  @keyframes scanMove { 0% { top: -2px; opacity: 0; } 10% { opacity: 0.2; } 90% { opacity: 0.2; } 100% { top: 1082px; opacity: 0; } }
+
+  .corner { position: absolute; width: 60px; height: 60px; }
+  .corner::before, .corner::after { content: ''; position: absolute; }
+  .corner::before { width: 100%; height: 2px; top: 0; left: 0; }
+  .corner::after  { width: 2px; height: 100%; top: 0; left: 0; }
+  .corner.tl { top: 30px; left: 30px; }
+  .corner.tl::before, .corner.tl::after { background: var(--verde); box-shadow: 0 0 8px var(--verde); }
+  .corner.br { bottom: 30px; right: 30px; transform: scale(-1); }
+  .corner.br::before, .corner.br::after { background: var(--verde); box-shadow: 0 0 8px var(--verde); }
+  .corner.tr { top: 30px; right: 30px; transform: scaleX(-1); }
+  .corner.tr::before, .corner.tr::after { background: var(--rojo); box-shadow: 0 0 8px var(--rojo); }
+  .corner.bl { bottom: 30px; left: 30px; transform: scaleY(-1); }
+  .corner.bl::before, .corner.bl::after { background: var(--rojo); box-shadow: 0 0 8px var(--rojo); }
+
+  .side-bar { position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; align-items: center; animation: fadeSlideIn 1.5s ease-out 0.5s both; }
+  .side-bar.left { left: 58px; }
+  .side-bar.right { right: 58px; }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(-50%) translateX(-20px); } to { opacity: 1; transform: translateY(-50%) translateX(0); } }
+  .side-dot { width: 5px; height: 5px; border-radius: 50%; opacity: 0.35; }
+  .side-dot.g { background: var(--verde); }
+  .side-dot.r { background: var(--rojo); }
+  .side-dot.active { width: 8px; height: 8px; opacity: 1; animation: dotPulse 2s ease-in-out infinite; }
+  .side-dot.active.g { box-shadow: 0 0 8px var(--verde); }
+  .side-dot.active.r { box-shadow: 0 0 8px var(--rojo); }
+  @keyframes dotPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .side-line { width: 2px; height: 70px; opacity: 0.25; border-radius: 1px; }
+  .side-line.g { background: linear-gradient(to bottom, var(--verde), transparent); }
+  .side-line.r { background: linear-gradient(to bottom, var(--rojo), transparent); }
+  .side-line.flip { transform: rotate(180deg); }
+
+  /* MARCA CON LOGO REAL */
+  .brand-area { position: absolute; top: 42px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; animation: fadeDown 1.2s ease-out both; }
+  @keyframes fadeDown { from { opacity: 0; transform: translateX(-50%) translateY(-20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  .brand-logo { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 20px rgba(0,255,136,0.3), 0 0 40px rgba(255,34,68,0.15); }
+  .brand-name { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 4px; color: var(--blanco); text-transform: uppercase; }
+  .brand-tag { font-size: 11px; letter-spacing: 3px; color: var(--cyan); opacity: 0.75; text-transform: uppercase; }
+
+  .status-bar { position: absolute; top: 50px; display: flex; align-items: center; gap: 10px; animation: fadeDown 1.2s ease-out 0.3s both; }
+  .status-bar.right { right: 70px; }
+  .status-bar.left  { left: 70px; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; animation: blink 1.5s ease-in-out infinite; }
+  .status-dot.g { background: var(--verde); box-shadow: 0 0 10px var(--verde); }
+  .status-dot.r { background: var(--rojo);  box-shadow: 0 0 10px var(--rojo); }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+  .status-text { font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }
+  .status-text.g { color: var(--verde); }
+  .status-text.r { color: var(--rojo); }
+
+  .center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .label-top { font-family: 'Share Tech Mono', monospace; font-size: 14px; letter-spacing: 6px; color: var(--cyan); opacity: 0.65; text-transform: uppercase; margin-bottom: 18px; animation: fadeUp 1.4s ease-out 0.4s both; }
+  .title-main { font-family: 'Bebas Neue', sans-serif; font-size: 160px; line-height: 0.9; letter-spacing: 8px; color: transparent; background: linear-gradient(135deg, #ffffff 0%, var(--cyan) 40%, var(--azul-glow) 70%, #ffffff 100%); -webkit-background-clip: text; background-clip: text; background-size: 300% 300%; filter: drop-shadow(0 0 40px rgba(0,229,255,0.4)); animation: fadeUp 1.2s ease-out 0.2s both, titleShimmer 6s ease-in-out 1.5s infinite, flicker 9s ease-in-out 4s infinite; }
+  @keyframes titleShimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  @keyframes flicker { 0%, 96%, 100% { opacity: 1; } 97% { opacity: 0.82; } 98% { opacity: 1; } }
+  .title-sub { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 14px; color: var(--verde); text-shadow: 0 0 20px rgba(0,255,136,0.5); margin-top: -6px; animation: fadeUp 1.2s ease-out 0.5s both; }
+  .divider { width: 420px; height: 1px; margin: 28px 0 22px; background: linear-gradient(90deg, var(--rojo), transparent 20%, var(--cyan) 50%, transparent 80%, var(--verde)); position: relative; animation: fadeUp 1.2s ease-out 0.7s both; }
+  .divider::before { content: ''; position: absolute; top: -3px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+  .starting-label { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 600; letter-spacing: 8px; color: var(--blanco); opacity: 0.55; text-transform: uppercase; animation: fadeUp 1.2s ease-out 0.8s both; }
+
+  .timer-wrap { position: relative; margin-top: 16px; animation: fadeUp 1.2s ease-out 1s both; }
+  .timer-bg { position: absolute; inset: -20px -30px; background: rgba(0,229,255,0.03); border: 1px solid rgba(0,229,255,0.10); border-radius: 8px; }
+  #timer { font-family: 'Share Tech Mono', monospace; font-size: 110px; letter-spacing: 12px; color: var(--blanco); line-height: 1; position: relative; z-index: 1; text-shadow: 0 0 20px rgba(0,229,255,0.6), 0 0 60px rgba(0,229,255,0.2); transition: color 0.4s, text-shadow 0.4s; }
+  #timer.warning { color: #ffaa00; text-shadow: 0 0 20px rgba(255,170,0,0.7), 0 0 60px rgba(255,170,0,0.2); }
+  #timer.urgent { color: var(--rojo); text-shadow: 0 0 20px rgba(255,34,68,0.8), 0 0 60px rgba(255,34,68,0.3); animation: urgentPulse 0.5s ease-in-out infinite; }
+  @keyframes urgentPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+
+  .progress-area { position: absolute; bottom: 68px; left: 120px; right: 120px; animation: fadeUp 1.4s ease-out 1.2s both; }
+  .progress-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+  .progress-label { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--cyan); opacity: 0.6; text-transform: uppercase; }
+  #progress-pct { font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--verde); }
+  .progress-track { width: 100%; height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+  #progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--rojo), var(--azul-glow), var(--cyan), var(--verde)); border-radius: 2px; transition: width 1s linear; position: relative; box-shadow: 0 0 10px var(--cyan); }
+  #progress-fill::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; border-radius: 50%; background: white; box-shadow: 0 0 8px var(--cyan); }
+
+  .tags { position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%); display: flex; gap: 18px; animation: fadeUp 1.4s ease-out 1.4s both; }
+  .tag { font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 4px 14px; border-radius: 3px; border: 1px solid; }
+  .tag.cyan  { color: var(--cyan);  border-color: rgba(0,229,255,0.25); }
+  .tag.gris  { color: var(--gris);  border-color: rgba(255,255,255,0.06); }
+  .tag.verde { color: var(--verde); border-color: rgba(0,255,136,0.25); }
+  .tag.rojo  { color: var(--rojo);  border-color: rgba(255,34,68,0.25); }
+
+  .particles { position: absolute; inset: 0; pointer-events: none; }
+  .particle  { position: absolute; border-radius: 50%; animation: floatUp linear infinite; opacity: 0; }
+  @keyframes floatUp { 0% { transform: translateY(0) translateX(0); opacity: 0; } 10% { opacity: 0.5; } 90% { opacity: 0.15; } 100% { transform: translateY(-280px) translateX(var(--drift)); opacity: 0; } }
+
+  .exit-overlay { position: fixed; inset: 0; z-index: 999; pointer-events: none; }
+  .exit-flash { position: absolute; inset: 0; background: white; opacity: 0; }
+  .exit-glitch { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,34,68,0.18) 3px, rgba(255,34,68,0.18) 4px); opacity: 0; }
+  .exit-wipe { position: absolute; inset: 0; background: var(--negro); transform: scaleX(0); transform-origin: left; }
+  body.exiting .exit-flash  { animation: exitFlash  0.25s ease-out forwards; }
+  body.exiting .exit-glitch { animation: exitGlitch 1.1s ease-in-out forwards; }
+  body.exiting .exit-wipe   { animation: exitWipe   0.9s cubic-bezier(0.86,0,0.07,1) 0.35s forwards; }
+  body.exiting .center, body.exiting .brand-area { animation: contentFade 0.6s ease-in 0.1s forwards; }
+  body.exiting .progress-area, body.exiting .tags, body.exiting .side-bar, body.exiting .status-bar { animation: contentFade 0.5s ease-in forwards; }
+  body.exiting .bg-grid { animation: contentFade 0.8s ease-in forwards; }
+  @keyframes exitFlash { 0% { opacity: 0; } 30% { opacity: 0.55; } 100% { opacity: 0; } }
+  @keyframes exitGlitch { 0% { opacity: 0; transform: translateX(0); } 10% { opacity: 0.9; transform: translateX(-10px); } 20% { transform: translateX(7px); } 30% { opacity: 0.7; transform: translateX(-5px); } 50% { opacity: 0.3; transform: translateX(0); } 100% { opacity: 0; } }
+  @keyframes exitWipe { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes contentFade { from { opacity: 1; filter: blur(0); } to { opacity: 0; filter: blur(6px); } }
+
+  @keyframes waitPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+  @keyframes waitDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.2; transform: scale(0.7); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* EXPLOSIÓN DEL TIMER AL LLEGAR A 00:00 */
+  @keyframes timerExplode {
+    0%   { transform: scale(1);    opacity: 1; letter-spacing: 12px; }
+    15%  { transform: scale(1.35); opacity: 1; letter-spacing: 24px; color: #ff2244; text-shadow: 0 0 60px rgba(255,34,68,1), 0 0 120px rgba(255,34,68,0.6); }
+    40%  { transform: scale(1.6);  opacity: 0.8; letter-spacing: 40px; }
+    70%  { transform: scale(2.2);  opacity: 0.3; letter-spacing: 60px; }
+    100% { transform: scale(3);    opacity: 0;   letter-spacing: 80px; }
+  }
+  @keyframes shockwave {
+    0%   { transform: translate(-50%,-50%) scale(0); opacity: 0.9; }
+    100% { transform: translate(-50%,-50%) scale(4); opacity: 0; }
+  }
+  @keyframes flashRed {
+    0%   { opacity: 0; }
+    20%  { opacity: 0.7; }
+    60%  { opacity: 0.4; }
+    100% { opacity: 0; }
+  }
+  #timer.exploding { animation: timerExplode 1s cubic-bezier(0.22,1,0.36,1) forwards !important; }
+  .shockwave-ring {
+    position: absolute; left: 50%; top: 50%;
+    width: 300px; height: 300px; margin-left: -150px; margin-top: -150px;
+    border-radius: 50%;
+    border: 3px solid var(--rojo);
+    box-shadow: 0 0 30px var(--rojo), inset 0 0 30px rgba(255,34,68,0.3);
+    animation: shockwave 0.8s ease-out forwards;
+    pointer-events: none;
+  }
+  .flash-red {
+    position: fixed; inset: 0; z-index: 998;
+    background: radial-gradient(ellipse at center, rgba(255,34,68,0.6) 0%, transparent 70%);
+    animation: flashRed 0.8s ease-out forwards;
+    pointer-events: none;
+  }
+  #en-vivo-text {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+    font-family: 'Bebas Neue', sans-serif; font-size: 140px; letter-spacing: 16px;
+    color: var(--verde); text-shadow: 0 0 40px rgba(0,255,136,0.9), 0 0 80px rgba(0,255,136,0.4);
+    opacity: 0; white-space: nowrap; z-index: 2;
+    animation: none;
+  }
+  @keyframes enVivoIn {
+    0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.5); letter-spacing: 4px; }
+    60%  { opacity: 1; transform: translate(-50%,-50%) scale(1.08); letter-spacing: 20px; }
+    100% { opacity: 1; transform: translate(-50%,-50%) scale(1);    letter-spacing: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<audio id="bg-music" loop>
+  <source src="https://github.com/bmcbusinessinfo-dotcom/overlays/raw/refs/heads/main/Cartoon,%20J%C3%A9ja%20-%20On%20&%20On%20(feat.%20Daniel%20Levi)%20%20Electronic%20Pop%20%20NCS%20-%20Copyright%20Free%20Music.mp3" type="audio/mpeg">
+</audio>
+<button id="music-btn" onclick="toggleMusic()" title="Música" style="position:fixed;bottom:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,229,255,0.15);border:1px solid rgba(0,229,255,0.3);color:var(--cyan);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.01;transition:opacity 0.3s;z-index:9999;">▶</button>
+
+<div id="wait-screen" style="display:none;opacity:0;position:fixed;inset:0;z-index:1000;background:var(--negro);flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity 0.8s ease;">
+  <img src="https://raw.githubusercontent.com/bmcbusinessinfo-dotcom/overlays/main/Logo%20circular.png" style="width:120px;height:120px;border-radius:50%;box-shadow:0 0 40px rgba(0,255,136,0.3);">
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:var(--verde);animation:waitPulse 2s ease-in-out infinite;">UN MOMENTO...</div>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:14px;letter-spacing:4px;color:var(--cyan);opacity:0.6;text-transform:uppercase;">El stream iniciará pronto</div>
+  <div style="display:flex;gap:10px;margin-top:8px;">
+    <div style="width:8px;height:8px;border-radius:50%;background:var(--verde);box-shadow:0 0 8px var(--verde);animation:waitDot 1.5s ease-in-out infinite 0s"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:var(--rojo);box-shadow:0 0 8px var(--rojo);animation:waitDot 1.5s ease-in-out infinite 0.3s"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:var(--verde);box-shadow:0 0 8px var(--verde);animation:waitDot 1.5s ease-in-out infinite 0.6s"></div>
+  </div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;color:var(--blanco);opacity:0.2;margin-top:16px;">Primos Life</div>
+</div>
+
+<div class="exit-overlay">
+  <div class="exit-flash"></div>
+  <div class="exit-glitch"></div>
+  <div class="exit-wipe"></div>
+</div>
+
+<div class="bg-grid"></div>
+<div class="bg-radial"></div>
+<div class="scanline"></div>
+
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
+<div class="side-bar left">
+  <div class="side-line g flip"></div>
+  <div class="side-dot g"></div>
+  <div class="side-dot g active"></div>
+  <div class="side-dot g"></div>
+  <div class="side-line g"></div>
+</div>
+<div class="side-bar right">
+  <div class="side-line r flip"></div>
+  <div class="side-dot r"></div>
+  <div class="side-dot r active"></div>
+  <div class="side-dot r"></div>
+  <div class="side-line r"></div>
+</div>
+
+<div class="status-bar left">
+  <div class="status-dot r"></div>
+  <div class="status-text r">Pre-Show</div>
+</div>
+<div class="status-bar right">
+  <div class="status-dot g" id="status-dot-g"></div>
+  <div class="status-text g" id="status-msg">Conectando...</div>
+</div>
+
+<div class="brand-area">
+  <img class="brand-logo" src="https://raw.githubusercontent.com/bmcbusinessinfo-dotcom/overlays/main/Logo%20circular.png" alt="Primos Life">
+  <div>
+    <div class="brand-name">Primos<span style="color:var(--verde)">Life</span></div>
+    <div class="brand-tag">▸ Streaming IRL</div>
+  </div>
+</div>
+
+<div class="particles" id="particles"></div>
+
+<div class="center">
+  <div class="label-top">// transmisión en vivo //</div>
+  <div class="title-main">PRIMOS</div>
+  <div class="title-sub">PRIMOS LIFE</div>
+  <div class="divider"></div>
+  <div class="starting-label">Iniciamos en</div>
+  <div class="timer-wrap">
+    <div class="timer-bg"></div>
+    <div id="timer">05:00</div>
+    <div id="en-vivo-text">¡EN VIVO!</div>
+  </div>
+</div>
+
+<div class="progress-area">
+  <div class="progress-header">
+    <span class="progress-label">▸ Pre-show</span>
+    <span id="progress-pct">0%</span>
+  </div>
+  <div class="progress-track">
+    <div id="progress-fill"></div>
+  </div>
+</div>
+
+<div class="tags">
+  <div class="tag rojo">● Pre-Show</div>
+  <div class="tag cyan">Kick.com</div>
+  <div class="tag gris">/PrimosLife</div>
+  <div class="tag verde">IRL Stream</div>
+</div>
+
+<script>
+const TOTAL = 5 * 60;
+let remaining = TOTAL;
+const timerEl = document.getElementById('timer');
+const fillEl  = document.getElementById('progress-fill');
+const pctEl   = document.getElementById('progress-pct');
+const statusMsg  = document.getElementById('status-msg');
+const statusDotG = document.getElementById('status-dot-g');
+const waitEl  = document.getElementById('wait-screen');
+function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+function enterWaitMode() {
+  document.body.classList.remove('exiting');
+  document.body.classList.add('waiting');
+  waitEl.style.display = 'flex';
+  requestAnimationFrame(() => { waitEl.style.opacity = '1'; });
+}
+function triggerExit() {
+  document.body.classList.add('exiting');
+  setTimeout(enterWaitMode, 6000);
+}
+function tick() {
+  const m = Math.floor(remaining / 60);
+  const s = remaining % 60;
+  timerEl.textContent = pad(m) + ':' + pad(s);
+  const pct = Math.round(((TOTAL - remaining) / TOTAL) * 100);
+  fillEl.style.width = pct + '%';
+  pctEl.textContent  = pct + '%';
+  if (remaining <= 120 && remaining > 60) { timerEl.classList.add('warning'); statusMsg.textContent = 'Casi listos...'; }
+  if (remaining <= 60 && remaining > 0) {
+    timerEl.classList.remove('warning'); timerEl.classList.add('urgent');
+    statusMsg.textContent = '¡Ya mero!'; statusMsg.style.color = 'var(--rojo)';
+    statusDotG.style.background = 'var(--rojo)'; statusDotG.style.boxShadow = '0 0 10px var(--rojo)';
+  }
+  if (remaining === 0) {
+    clearInterval(interval);
+    timerEl.classList.remove('warning','urgent');
+
+    /* 1. Explosión del contador */
+    timerEl.classList.add('exploding');
+
+    /* 2. Flash rojo sobre toda la pantalla */
+    const flashEl = document.createElement('div');
+    flashEl.className = 'flash-red';
+    document.body.appendChild(flashEl);
+    setTimeout(() => flashEl.remove(), 900);
+
+    /* 3. Anillo de shockwave desde el centro */
+    const ring = document.createElement('div');
+    ring.className = 'shockwave-ring';
+    document.querySelector('.timer-wrap').appendChild(ring);
+    setTimeout(() => ring.remove(), 900);
+
+    /* 4. Segundo anillo ligeramente retrasado */
+    setTimeout(() => {
+      const ring2 = document.createElement('div');
+      ring2.className = 'shockwave-ring';
+      ring2.style.borderColor = 'var(--verde)';
+      ring2.style.boxShadow = '0 0 30px var(--verde)';
+      document.querySelector('.timer-wrap').appendChild(ring2);
+      setTimeout(() => ring2.remove(), 900);
+    }, 200);
+
+    /* 5. Status → EN VIVO */
+    statusMsg.textContent = '¡EN VIVO!';
+    statusMsg.style.color = 'var(--verde)';
+    statusDotG.style.background = 'var(--verde)';
+    statusDotG.style.boxShadow  = '0 0 10px var(--verde)';
+
+    /* 6. Texto "¡EN VIVO!" aparece sobre el timer explotado */
+    const enVivoEl = document.getElementById('en-vivo-text');
+    setTimeout(() => {
+      enVivoEl.style.animation = 'enVivoIn 0.6s cubic-bezier(0.22,1,0.36,1) forwards';
+    }, 400);
+
+    /* 7. Después de 2.5s dispara la salida */
+    setTimeout(triggerExit, 2500);
+    return;
+  }
+  remaining--;
+}
+tick();
+const interval = setInterval(tick, 1000);
+
+const container = document.getElementById('particles');
+const colors = ['#00ff88','#00ff88','#00ff88','#ff2244','#ff2244','#ff2244','#00e5ff','#1a6fff'];
+for (let i = 0; i < 36; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = Math.random() * 4 + 2;
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  p.style.cssText = `width:${size}px;height:${size}px;background:${color};left:${Math.random()*100}%;bottom:${Math.random()*35}%;animation-duration:${Math.random()*8+6}s;animation-delay:${Math.random()*8}s;--drift:${(Math.random()-.5)*120}px;box-shadow:0 0 ${size*2}px ${color};`;
+  container.appendChild(p);
+}
+
+const audio = document.getElementById('bg-music');
+const btn   = document.getElementById('music-btn');
+let playing = false;
+function toggleMusic() {
+  if (playing) { audio.pause(); btn.textContent = '▶'; playing = false; }
+  else { audio.play().catch(()=>{}); btn.textContent = '⏸'; playing = true; }
+}
+</script>
+</body>
+</html>
