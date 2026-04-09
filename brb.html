@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRB - Primos Life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root { --negro:#060810; --azul:#0a2fff; --azul-glow:#1a6fff; --cyan:#00e5ff; --verde:#00ff88; --rojo:#ff2244; --blanco:#e8f4ff; --gris:#4a5568; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:100vw; height:100vh; overflow:hidden; background:var(--negro); color:var(--blanco); font-family:'Rajdhani',sans-serif; }
+
+  .bg-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(255,34,68,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.05) 1px,transparent 1px); background-size:80px 80px; animation:gridScroll 12s linear infinite; }
+  @keyframes gridScroll { from{background-position:0 0} to{background-position:80px 80px} }
+  .bg-radial { position:absolute; inset:0; background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(10,47,255,0.15) 0%,transparent 70%),radial-gradient(ellipse 30% 40% at 10% 50%,rgba(255,34,68,0.12) 0%,transparent 60%),radial-gradient(ellipse 30% 40% at 90% 50%,rgba(0,255,136,0.12) 0%,transparent 60%); }
+  .scanline { position:absolute; left:0; right:0; height:2px; opacity:0.12; animation:scanMove 5s ease-in-out infinite; }
+  .scanline.s1 { background:linear-gradient(90deg,transparent,var(--rojo),transparent); }
+  .scanline.s2 { background:linear-gradient(90deg,transparent,var(--verde),transparent); animation-duration:7s; animation-delay:2s; }
+  @keyframes scanMove { 0%{top:-2px;opacity:0} 10%{opacity:0.18} 90%{opacity:0.18} 100%{top:100vh;opacity:0} }
+
+  .corner { position:absolute; width:4vw; height:4vw; min-width:40px; min-height:40px; }
+  .corner::before, .corner::after { content:''; position:absolute; }
+  .corner::before { width:100%; height:2px; top:0; left:0; }
+  .corner::after  { width:2px; height:100%; top:0; left:0; }
+  .corner.tl { top:2vw; left:2vw; }
+  .corner.tl::before,.corner.tl::after { background:var(--verde); box-shadow:0 0 8px var(--verde); }
+  .corner.br { bottom:2vw; right:2vw; transform:scale(-1); }
+  .corner.br::before,.corner.br::after { background:var(--verde); box-shadow:0 0 8px var(--verde); }
+  .corner.tr { top:2vw; right:2vw; transform:scaleX(-1); }
+  .corner.tr::before,.corner.tr::after { background:var(--rojo); box-shadow:0 0 8px var(--rojo); }
+  .corner.bl { bottom:2vw; left:2vw; transform:scaleY(-1); }
+  .corner.bl::before,.corner.bl::after { background:var(--rojo); box-shadow:0 0 8px var(--rojo); }
+
+  .brand-area { position:absolute; top:3vh; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:14px; animation:fadeDown 1s ease-out both; white-space:nowrap; }
+  @keyframes fadeDown { from{opacity:0;transform:translateX(-50%) translateY(-20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+  .brand-logo { width:5vh; height:5vh; min-width:40px; min-height:40px; border-radius:50%; object-fit:cover; box-shadow:0 0 20px rgba(0,255,136,0.3),0 0 40px rgba(255,34,68,0.15); }
+  .brand-name { font-family:'Bebas Neue',sans-serif; font-size:clamp(18px,2vw,32px); letter-spacing:4px; color:var(--blanco); }
+  .brand-tag { font-size:clamp(9px,0.8vw,13px); letter-spacing:3px; color:var(--cyan); opacity:0.7; text-transform:uppercase; }
+
+  .status-bar { position:absolute; top:3.5vh; display:flex; align-items:center; gap:10px; animation:fadeDown 1s ease-out 0.2s both; }
+  .status-bar.right { right:4vw; }
+  .status-bar.left  { left:4vw; }
+  .status-dot { width:8px; height:8px; border-radius:50%; animation:blink 1s ease-in-out infinite; }
+  .status-dot.r { background:var(--rojo); box-shadow:0 0 10px var(--rojo); }
+  .status-dot.a { background:var(--cyan); box-shadow:0 0 10px var(--cyan); animation-duration:0.6s; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+  .status-text { font-family:'Share Tech Mono',monospace; font-size:clamp(9px,0.8vw,14px); letter-spacing:2px; text-transform:uppercase; }
+  .status-text.r { color:var(--rojo); }
+  .status-text.a { color:var(--cyan); }
+
+  .center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; display:flex; flex-direction:column; align-items:center; width:90vw; }
+  .label-top { font-family:'Share Tech Mono',monospace; font-size:clamp(10px,1vw,16px); letter-spacing:6px; color:var(--cyan); opacity:0.8; text-transform:uppercase; margin-bottom:2vh; animation:fadeUp 1s ease-out 0.3s both; }
+  .title-main { font-family:'Bebas Neue',sans-serif; font-size:clamp(55px,11vw,160px); line-height:0.85; letter-spacing:6px; color:transparent; background:linear-gradient(135deg,#ffffff 0%,var(--cyan) 35%,var(--rojo) 65%,#ffffff 100%); -webkit-background-clip:text; background-clip:text; background-size:300% 300%; filter:drop-shadow(0 0 50px rgba(255,34,68,0.5)); animation:fadeUp 1s ease-out 0.1s both,titleShimmer 5s ease-in-out 1s infinite,wobble 8s ease-in-out 3s infinite; }
+  @keyframes titleShimmer { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes wobble { 0%,90%,100%{transform:rotate(0deg)} 92%{transform:rotate(-1.5deg)} 94%{transform:rotate(1.5deg)} 96%{transform:rotate(-1deg)} 98%{transform:rotate(0.5deg)} }
+  .title-sub { font-family:'Bebas Neue',sans-serif; font-size:clamp(18px,3vw,42px); letter-spacing:12px; color:var(--verde); text-shadow:0 0 20px rgba(0,255,136,0.5); margin-top:-0.3em; animation:fadeUp 1s ease-out 0.4s both; }
+  .divider { width:30vw; height:1px; margin:2.5vh 0 2vh; background:linear-gradient(90deg,var(--rojo),transparent 20%,var(--cyan) 50%,transparent 80%,var(--verde)); position:relative; animation:fadeUp 1s ease-out 0.5s both; }
+  .divider::before { content:''; position:absolute; top:-3px; left:50%; transform:translateX(-50%); width:8px; height:8px; border-radius:50%; background:var(--cyan); box-shadow:0 0 10px var(--cyan); }
+
+  .funny-wrap { position:relative; height:4vh; min-height:30px; overflow:hidden; animation:fadeUp 1s ease-out 0.6s both; margin-bottom:1vh; }
+  .funny-text { font-family:'Rajdhani',sans-serif; font-size:clamp(12px,1.5vw,22px); font-weight:600; letter-spacing:2px; color:var(--blanco); opacity:0.6; text-transform:uppercase; text-align:center; position:absolute; width:100%; left:0; transition:opacity 0.5s,transform 0.5s; }
+  .funny-text.hidden  { opacity:0; transform:translateY(20px); }
+  .funny-text.visible { opacity:0.6; transform:translateY(0); }
+
+  .timer-wrap { position:relative; margin-top:1vh; animation:fadeUp 1s ease-out 0.8s both; }
+  .timer-label { font-family:'Share Tech Mono',monospace; font-size:clamp(9px,0.9vw,14px); letter-spacing:4px; color:var(--rojo); opacity:0.7; text-transform:uppercase; text-align:center; margin-bottom:4px; animation:labelPulse 2s ease-in-out infinite; }
+  @keyframes labelPulse { 0%,100%{opacity:0.7} 50%{opacity:0.3} }
+  .timer-bg { position:absolute; inset:-12px -20px; background:rgba(255,34,68,0.03); border:1px solid rgba(255,34,68,0.12); border-radius:8px; }
+  #absent-timer { font-family:'Share Tech Mono',monospace; font-size:clamp(40px,7vw,90px); letter-spacing:10px; color:var(--cyan); line-height:1; position:relative; z-index:1; text-shadow:0 0 20px rgba(0,229,255,0.6),0 0 60px rgba(0,229,255,0.2); }
+
+  .bottom-bar { position:absolute; bottom:0; left:0; right:0; height:7vh; min-height:50px; background:linear-gradient(0deg,rgba(6,8,16,0.95) 0%,transparent 100%); display:flex; align-items:center; padding:0 3vw; gap:1.5vw; animation:fadeUp 1s ease-out 1s both; }
+  .bottom-line { position:absolute; bottom:7vh; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--rojo) 30%,var(--cyan) 50%,var(--verde) 70%,transparent); opacity:0.4; }
+  .ticker-label { font-family:'Share Tech Mono',monospace; font-size:clamp(9px,0.8vw,13px); letter-spacing:3px; color:var(--cyan); opacity:0.7; white-space:nowrap; }
+  .ticker-divider { width:1px; height:24px; background:rgba(255,255,255,0.1); }
+  .ticker-text { font-family:'Rajdhani',sans-serif; font-size:clamp(12px,1.4vw,20px); font-weight:600; color:var(--blanco); flex:1; overflow:hidden; white-space:nowrap; }
+  .ticker-channel { font-family:'Share Tech Mono',monospace; font-size:clamp(9px,0.8vw,14px); letter-spacing:2px; color:var(--verde); opacity:0.8; white-space:nowrap; }
+
+  .particles { position:absolute; inset:0; pointer-events:none; }
+  .particle  { position:absolute; border-radius:50%; animation:floatUp linear infinite; opacity:0; }
+  @keyframes floatUp { 0%{transform:translateY(0) translateX(0);opacity:0} 10%{opacity:0.5} 90%{opacity:0.15} 100%{transform:translateY(-30vh) translateX(var(--drift));opacity:0} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+</style>
+</head>
+<body>
+
+<audio id="bg-music" loop>
+  <source src="https://raw.githubusercontent.com/bmcbusinessinfo-dotcom/overlays/main/Electro-Light%20-%20Symbolism%20%20Trap%20%20NCS%20-%20Copyright%20Free%20Music.mp3" type="audio/mpeg">
+</audio>
+<button id="music-btn" onclick="toggleMusic()" style="position:fixed;bottom:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,229,255,0.15);border:1px solid rgba(0,229,255,0.3);color:var(--cyan);font-size:14px;cursor:pointer;opacity:0.01;z-index:9999;">▶</button>
+
+<div class="bg-grid"></div>
+<div class="bg-radial"></div>
+<div class="scanline s1"></div>
+<div class="scanline s2"></div>
+<div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+
+<div class="status-bar left"><div class="status-dot a"></div><div class="status-text a">⚠ AFK</div></div>
+<div class="status-bar right"><div class="status-dot r"></div><div class="status-text r">Ya Regresamos</div></div>
+
+<div class="brand-area">
+  <img class="brand-logo" src="https://raw.githubusercontent.com/bmcbusinessinfo-dotcom/overlays/main/Logo%20circular.png" alt="PL">
+  <div>
+    <div class="brand-name">Primos<span style="color:var(--verde)">Life</span></div>
+    <div class="brand-tag">▸ Streaming IRL</div>
+  </div>
+</div>
+
+<div class="particles" id="particles"></div>
+
+<div class="center">
+  <div class="label-top">// pausa técnica //</div>
+  <div class="title-main">YA REGRESAMOS</div>
+  <div class="title-sub">PRIMOS LIFE</div>
+  <div class="divider"></div>
+  <div class="funny-wrap"><div class="funny-text visible" id="funny-display">No se fueron, solo están "preparando contenido"</div></div>
+  <div class="timer-wrap">
+    <div class="timer-label">▸ llevan ausentes</div>
+    <div class="timer-bg"></div>
+    <div id="absent-timer">00:00</div>
+  </div>
+</div>
+
+<div class="bottom-line"></div>
+<div class="bottom-bar">
+  <div class="ticker-label">▸ BRB</div>
+  <div class="ticker-divider"></div>
+  <div class="ticker-text">Primos Life — Ya regresan, no cierren la pestaña 👀</div>
+  <div class="ticker-divider"></div>
+  <div class="ticker-channel">@PrimosLife</div>
+</div>
+
+<script>
+let absentSeconds = 0;
+const absentEl = document.getElementById('absent-timer');
+function pad(n) { return n < 10 ? '0' + n : String(n); }
+setInterval(() => {
+  absentSeconds++;
+  absentEl.textContent = pad(Math.floor(absentSeconds/60)) + ':' + pad(absentSeconds%60);
+  if (absentSeconds >= 300) { absentEl.style.color = 'var(--rojo)'; absentEl.style.textShadow = '0 0 20px rgba(255,34,68,0.8)'; }
+}, 1000);
+
+const funny = ['No se fueron, solo están "preparando contenido"','Están buscando el WiFi más cercano 📶','Técnicamente siguen en vivo... el teléfono sí','Seguro se quedaron dormidos de pie 😴','"Ya mero regresamos" — hace 5 minutos','El baño más largo de la historia del streaming','Buscando inspiración en el refrigerador 🍕','La señal salió, ellos también 📡','¿Alguien vio a unos primos por aquí?','Modo incógnito activado... en la vida real'];
+let funnyIdx = 0;
+const funnyEl = document.getElementById('funny-display');
+setInterval(() => {
+  funnyEl.classList.remove('visible'); funnyEl.classList.add('hidden');
+  setTimeout(() => { funnyIdx = (funnyIdx+1) % funny.length; funnyEl.textContent = funny[funnyIdx]; funnyEl.classList.remove('hidden'); funnyEl.classList.add('visible'); }, 600);
+}, 5000);
+
+const container = document.getElementById('particles');
+const colors = ['#ff2244','#ff2244','#00ff88','#00ff88','#00e5ff','#1a6fff'];
+for (let i = 0; i < 36; i++) {
+  const p = document.createElement('div'); p.className = 'particle';
+  const size = Math.random()*4+2; const color = colors[Math.floor(Math.random()*colors.length)];
+  p.style.cssText = `width:${size}px;height:${size}px;background:${color};left:${Math.random()*100}%;bottom:${Math.random()*35}%;animation-duration:${Math.random()*8+6}s;animation-delay:${Math.random()*8}s;--drift:${(Math.random()-.5)*120}px;box-shadow:0 0 ${size*2}px ${color};`;
+  container.appendChild(p);
+}
+const audio = document.getElementById('bg-music');
+let playing = false;
+function toggleMusic() { if (playing) { audio.pause(); playing=false; } else { audio.play().catch(()=>{}); playing=true; } }
+</script>
+</body>
+</html>
